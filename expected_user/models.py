@@ -1,4 +1,6 @@
-from django.db import models, IntegrityError
+from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 import string, random
 
 # Create your models here.
@@ -15,25 +17,12 @@ class ExpectedUser(models.Model):
     registration = models.CharField(max_length=16, blank=True, editable=False, unique=True)
 
 
-    def save(self, *args, **kwargs):
-        if not self.registration:
-            self.registration = id_generator()
-            # using your function as above or anything else
-        success = False
-        failures = 0
-        while not success:
-            try:
-                super(ExpectedUser, self).save(*args, **kwargs)
-            except IntegrityError:
-                failures += 1
-                if failures > 5:  # or some other arbitrary cutoff point at which things are clearly wrong
-                    raise
-                else:
-                    # looks like a collision, try another random value
-                    self.registration = id_generator()
-            else:
-                success = True
-
-
     def __unicode__(self):
         return self.fullname
+
+
+@receiver(post_save, sender=ExpectedUser)
+def add_registration_id_to_model(sender, instance, *args, **kwargs):
+    sender.objects.filter(pk=instance.pk).update(registration=id_generator())
+
+

@@ -7,13 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('expected_user', '0001_initial'),
+        ('users', '0002_expecteduser_registration'),
     ]
 
     operations = [
-        migrations.AddField(
+        migrations.AlterField(
             model_name='expecteduser',
             name='registration',
-            field=models.CharField(default=0, max_length=120, verbose_name=b'O60T2W'),
+            field=models.CharField(unique=True, max_length=16, editable=False, blank=True),
         ),
     ]

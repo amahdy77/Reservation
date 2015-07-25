@@ -5,6 +5,8 @@
     <title></title>
 </head>
 <body>
-    <h1>THIS IS AWESOME!</h1>
+{% for data in all_data %}
+    <input type="text" value="{{ data.fullname }}"><br>
+{% endfor %}
 </body>
 </html>
